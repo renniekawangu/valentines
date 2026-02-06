@@ -93,7 +93,7 @@ const ValentinePage = () => {
     setIsMobile(isTouchDevice());
   }, []);
 
-  const playSound = (type: 'success' | 'evade') => {
+  const playSound = (type: 'success' | 'evade' | 'cheer') => {
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       
@@ -123,6 +123,43 @@ const ValentinePage = () => {
             osc.stop(time + chordIndex * 0.4 + 0.4);
           });
         });
+      } else if (type === 'cheer') {
+        // Cheering sound: triumphant rising notes followed by celebration bells
+        const time = audioContext.currentTime;
+        
+        // Rising triumph notes
+        const triumphNotes = [523.25, 659.25, 783.99, 1046.5]; // C, E, G, C (high)
+        triumphNotes.forEach((freq, index) => {
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.15, time + index * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.01, time + index * 0.08 + 0.3);
+          
+          osc.start(time + index * 0.08);
+          osc.stop(time + index * 0.08 + 0.3);
+        });
+        
+        // Celebration bells (high frequency shimmer)
+        for (let i = 0; i < 3; i++) {
+          const bellFreq = 1200 + i * 150;
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          
+          osc.frequency.value = bellFreq;
+          gain.gain.setValueAtTime(0.1, time + 0.4 + i * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.01, time + 0.4 + i * 0.1 + 0.25);
+          
+          osc.start(time + 0.4 + i * 0.1);
+          osc.stop(time + 0.4 + i * 0.1 + 0.25);
+        }
       } else {
         // Evade sound: soft, gentle chime (romantic but playful)
         const frequencies = [523.25, 659.25]; // High, sweet notes
@@ -179,6 +216,7 @@ const ValentinePage = () => {
 
   const handleYesClick = () => {
     playSound('success');
+    playSound('cheer');
     setShowConfetti(true);
     setAccepted(true);
   };
@@ -217,7 +255,9 @@ const ValentinePage = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Marvelous C Muhata, will you be my Valentine?
+            Marvelous C Muhata,
+            <br />
+            will you be my Valentine?
           </motion.h1>
 
           {/* Decorative emoji */}
@@ -344,8 +384,6 @@ const ValentinePage = () => {
             transition={{ delay: 0.8, duration: 0.6 }}
           >
             Forever yours 💕
-            <br />
-            Always and forever 💕
           </motion.p>
         </motion.div>
       )}
