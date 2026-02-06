@@ -3,6 +3,84 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
+const HauConfetti = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Create falling "Hau" text
+    const hauElements: Array<{
+      el: HTMLDivElement;
+      y: number;
+      vy: number;
+      x: number;
+      vx: number;
+    }> = [];
+
+    for (let i = 0; i < 15; i++) {
+      const hau = document.createElement('div');
+      hau.textContent = 'Hau';
+      hau.className = 'text-4xl font-bold pointer-events-none absolute opacity-80';
+      
+      const colors = ['text-red-500', 'text-pink-500', 'text-rose-500', 'text-red-400'];
+      hau.classList.add(colors[Math.floor(Math.random() * colors.length)]);
+      
+      const x = Math.random() * window.innerWidth;
+      const y = -50;
+      const vy = Math.random() * 2 + 2;
+      const vx = Math.random() * 4 - 2;
+      
+      hau.style.left = x + 'px';
+      hau.style.top = y + 'px';
+      hau.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+      
+      container.appendChild(hau);
+      hauElements.push({ el: hau, y, vy, x, vx });
+    }
+
+    const animate = () => {
+      let hasElements = false;
+
+      hauElements.forEach((h, index) => {
+        h.y += h.vy;
+        h.x += h.vx;
+        h.vy += 0.1;
+        h.vx *= 0.99; // Air resistance
+
+        h.el.style.left = h.x + 'px';
+        h.el.style.top = h.y + 'px';
+        h.el.style.opacity = Math.max(0, 0.8 - (h.y / window.innerHeight) * 0.8).toString();
+
+        if (h.y < window.innerHeight) {
+          hasElements = true;
+        } else {
+          h.el.remove();
+          hauElements.splice(index, 1);
+        }
+      });
+
+      if (hasElements) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    animate();
+
+    return () => {
+      hauElements.forEach((h) => h.el.remove());
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="fixed top-0 left-0 w-full h-full pointer-events-none"
+    />
+  );
+};
+
 const Confetti = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -76,6 +154,7 @@ const ValentinePage = () => {
   const [accepted, setAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState<{ x: number; y: number } | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showHau, setShowHau] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [touchStartTime, setTouchStartTime] = useState(0);
   const noButtonRef = useRef<HTMLButtonElement>(null);
@@ -198,6 +277,8 @@ const ValentinePage = () => {
     playSound('evade');
     const newPos = generateRandomPosition();
     setNoButtonPos(newPos);
+    setShowHau(true);
+    setTimeout(() => setShowHau(false), 2000);
   };
 
   const handleNoTouchStart = () => {
@@ -240,6 +321,7 @@ const ValentinePage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-rose-100 overflow-hidden">
       {showConfetti && <Confetti />}
+      {showHau && <HauConfetti />}
       {!accepted ? (
         <motion.div
           variants={containerVariants}
