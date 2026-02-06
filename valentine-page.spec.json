@@ -1,0 +1,55 @@
+{
+  "feature": "Valentine Interactive Page",
+  "framework": "React",
+  "styling": "TailwindCSS",
+  "animation": "Framer Motion",
+  "componentName": "ValentinePage",
+  "route": "/valentine",
+  "state": {
+    "accepted": "boolean"
+  },
+  "ui": {
+    "questionText": "Will you be my Valentine?",
+    "buttons": [
+      {
+        "label": "Yes 💖",
+        "action": "acceptProposal",
+        "style": "primary"
+      },
+      {
+        "label": "No 🙈",
+        "action": "evadeClick",
+        "style": "secondary"
+      }
+    ]
+  },
+  "behavior": {
+    "noButton": {
+      "onHover": "moveToRandomScreenPosition",
+      "onClick": "moveToRandomScreenPosition",
+      "positioning": "fixed",
+      "constraints": {
+        "maxWidthOffset": 120,
+        "maxHeightOffset": 60
+      }
+    },
+    "yesButton": {
+      "onClick": "showValentineLetter"
+    }
+  },
+  "acceptedView": {
+    "title": "Happy Valentine’s Day ❤️",
+    "message": "Thank you for saying yes. You make my world brighter and my days warmer. Every moment with you is special, and I’m grateful for you today and always.",
+    "signature": "Forever yours 💕"
+  },
+  "animations": {
+    "entry": "fadeAndScaleIn",
+    "duration": 0.6
+  },
+  "responsiveness": true,
+  "tone": "romantic",
+  "accessibility": {
+    "keyboardFriendly": true,
+    "ariaLabels": true
+  }
+}
