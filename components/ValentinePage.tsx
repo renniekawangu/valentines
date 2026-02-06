@@ -274,7 +274,7 @@ const ValentinePage = () => {
   };
 
   const handleNoButtonInteraction = () => {
-    playSound('evade');
+    //playSound('evade');
     const newPos = generateRandomPosition();
     setNoButtonPos(newPos);
     setShowHau(true);
