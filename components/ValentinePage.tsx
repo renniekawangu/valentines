@@ -233,16 +233,7 @@ const ValentinePage = () => {
               </motion.button>
             )}
           </div>
-
-          {/* Helpful hint */}
-          <motion.p
-            className="text-sm text-gray-600 mt-8 italic"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-          >
-            (Try to click the No button 😉)
-          </motion.p>
+          
         </motion.div>
       ) : (
         <motion.div
