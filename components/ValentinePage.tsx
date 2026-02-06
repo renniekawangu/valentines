@@ -430,9 +430,9 @@ const ValentinePage = () => {
               initial={{ opacity: 0, y: 20, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.8 }}
-              className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl px-6 py-4 max-w-sm text-center z-50"
+              className="fixed bottom-6 left-4 right-4 md:bottom-10 md:left-auto md:right-auto md:w-auto bg-white rounded-lg shadow-xl px-4 py-3 md:px-6 md:py-4 text-center z-40"
             >
-              <p className="text-lg font-semibold text-red-600">{persuasionMessage}</p>
+              <p className="text-base md:text-lg font-semibold text-red-600">{persuasionMessage}</p>
             </motion.div>
           )}
         </motion.div>
