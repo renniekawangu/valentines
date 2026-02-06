@@ -161,18 +161,17 @@ const ValentinePage = () => {
   const noButtonRef = useRef<HTMLButtonElement>(null);
 
   const persuasionMessages = [
-    "Come on, you know you want to! 💕",
+    "Nalafwa ine😭😭",
+    "Ndekumyanga mwilinso😭😭",
     "Just click Yes already! 😊",
     "Don't be shy... say Yes! 🥰",
-    "I promise you won't regret it ❤️",
     "Pleeeease click Yes 🥺",
-    "You're making this harder than it needs to be 😉",
-    "Yes is the right answer, trust me! 💖",
-    "Click Yes and make me happy! 💗",
-    "No way! You meant Yes, right? 😌",
-    "That's a No but let's turn it into a Yes 💝",
-    "I believe in you... click Yes! 🎯",
-    "Your heart knows the answer... it's Yes! ❤️",
+    "Mayo nafwa ine😭😭😭",
+    "Ba marve sure😭💔",
+    "Me I’ll beat you💀",
+    "Lobe I won’t cook for you nshima🥲",
+    "Your head like a pumpkin😭",
+    "Pantu God already loves me😭 fisunge",
   ];
 
   useEffect(() => {
