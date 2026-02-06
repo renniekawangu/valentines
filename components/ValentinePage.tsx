@@ -352,9 +352,9 @@ const ValentinePage = () => {
             <br /><br />
             Today and always, I choose you, and I’m endlessly grateful to call you mine. 
             <br />
-            I Love you.
+            I Love you baby💕
             <br />
-            Now, always, and forever💕
+            Now, always, and forever
             </motion.p>
 
 
