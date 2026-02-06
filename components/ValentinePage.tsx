@@ -304,7 +304,7 @@ const ValentinePage = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Thank you for saying yes. You make my world brighter and my days warmer. Every moment with you is special, and I'm grateful for you today and always.
+            You make my world brighter and my days warmer. Every moment with you is special, and I'm grateful for you today and always.
           </motion.p>
 
           {/* Animated hearts */}
@@ -336,19 +336,8 @@ const ValentinePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            Forever yours 💕
+            Love You always 💕
           </motion.p>
-
-          {/* Reset Button */}
-          <motion.button
-            onClick={handleReset}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-12 px-6 py-2 text-sm font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-            aria-label="Ask again"
-          >
-            Ask Again? 💬
-          </motion.button>
         </motion.div>
       )}
     </div>
