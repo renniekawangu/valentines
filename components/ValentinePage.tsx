@@ -296,7 +296,7 @@ const ValentinePage = () => {
     // Show persuasion message
     const randomMessage = persuasionMessages[Math.floor(Math.random() * persuasionMessages.length)];
     setPersuasionMessage(randomMessage);
-    setTimeout(() => setPersuasionMessage(''), 2500);
+    setTimeout(() => setPersuasionMessage(''), 4000);
   };
 
   const handleNoTouchStart = () => {
