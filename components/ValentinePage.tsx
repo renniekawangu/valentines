@@ -155,9 +155,25 @@ const ValentinePage = () => {
   const [noButtonPos, setNoButtonPos] = useState<{ x: number; y: number } | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showHau, setShowHau] = useState(false);
+  const [persuasionMessage, setPersuasionMessage] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [touchStartTime, setTouchStartTime] = useState(0);
   const noButtonRef = useRef<HTMLButtonElement>(null);
+
+  const persuasionMessages = [
+    "Come on, you know you want to! 💕",
+    "Just click Yes already! 😊",
+    "Don't be shy... say Yes! 🥰",
+    "I promise you won't regret it ❤️",
+    "Pleeeease click Yes 🥺",
+    "You're making this harder than it needs to be 😉",
+    "Yes is the right answer, trust me! 💖",
+    "Click Yes and make me happy! 💗",
+    "No way! You meant Yes, right? 😌",
+    "That's a No but let's turn it into a Yes 💝",
+    "I believe in you... click Yes! 🎯",
+    "Your heart knows the answer... it's Yes! ❤️",
+  ];
 
   useEffect(() => {
     // Detect if device is touch-enabled
@@ -279,6 +295,11 @@ const ValentinePage = () => {
     setNoButtonPos(newPos);
     setShowHau(true);
     setTimeout(() => setShowHau(false), 2000);
+    
+    // Show persuasion message
+    const randomMessage = persuasionMessages[Math.floor(Math.random() * persuasionMessages.length)];
+    setPersuasionMessage(randomMessage);
+    setTimeout(() => setPersuasionMessage(''), 2500);
   };
 
   const handleNoTouchStart = () => {
@@ -319,9 +340,22 @@ const ValentinePage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-rose-100 overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-rose-100 overflow-hidden relative">
       {showConfetti && <Confetti />}
       {showHau && <HauConfetti />}
+      
+      {/* Persuasion Message */}
+      {persuasionMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -20, scale: 0.8 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.8 }}
+          className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl px-6 py-4 max-w-sm text-center z-50"
+        >
+          <p className="text-lg font-semibold text-red-600">{persuasionMessage}</p>
+        </motion.div>
+      )}
+      
       {!accepted ? (
         <motion.div
           variants={containerVariants}
@@ -366,26 +400,21 @@ const ValentinePage = () => {
 
             {/* No Button - with evading behavior */}
             {!noButtonPos ? (
-              <>
-                <motion.button
-                  ref={noButtonRef}
-                  onMouseEnter={!isMobile ? handleNoButtonInteraction : undefined}
-                  onClick={handleNoButtonInteraction}
-                  onTouchStart={isMobile ? handleNoTouchStart : undefined}
-                  onTouchEnd={isMobile ? handleNoTouchEnd : undefined}
-                  whileHover={!isMobile ? {} : { scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer ${
-                    isMobile ? 'py-6 px-10 text-xl' : ''
-                  }`}
-                  aria-label="Decline Valentine proposal"
-                >
-                  No 🙈
-                </motion.button>
-                <div className="text-sm text-gray-500 mt-2">
-                  Hover or tap the "No" button to see what happens!
-                </div>
-              </>
+              <motion.button
+                ref={noButtonRef}
+                onMouseEnter={!isMobile ? handleNoButtonInteraction : undefined}
+                onClick={handleNoButtonInteraction}
+                onTouchStart={isMobile ? handleNoTouchStart : undefined}
+                onTouchEnd={isMobile ? handleNoTouchEnd : undefined}
+                whileHover={!isMobile ? {} : { scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer ${
+                  isMobile ? 'py-6 px-10 text-xl' : ''
+                }`}
+                aria-label="Decline Valentine proposal"
+              >
+                No 🙈
+              </motion.button>
             ) : (
               <motion.button
                 ref={noButtonRef}
