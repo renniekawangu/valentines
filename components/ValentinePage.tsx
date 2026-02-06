@@ -294,7 +294,7 @@ const ValentinePage = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Happy Valentine's Day ❤️
+            My Valentine ❤️
           </motion.h1>
 
           {/* Message */}
@@ -303,9 +303,16 @@ const ValentinePage = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            You make my world brighter and my days warmer. Every moment with you is special, and I'm grateful for you today and always.
-          </motion.p>
+            >
+            From the moment you came into my life, everything felt a little warmer and a little brighter.
+            You have a way of turning ordinary moments into something special, simply by being you.
+            <br /><br />
+            Your smile stays with me longer than you know, and your presence feels like home.
+            Thank you for being someone who makes love feel easy, real, and beautiful.
+            <br /><br />
+            Today and always, I choose you — and I’m endlessly grateful to call you mine.
+            </motion.p>
+
 
           {/* Animated hearts */}
           <motion.div
