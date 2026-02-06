@@ -76,7 +76,22 @@ const ValentinePage = () => {
   const [accepted, setAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState<{ x: number; y: number } | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStartTime, setTouchStartTime] = useState(0);
   const noButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // Detect if device is touch-enabled
+    const isTouchDevice = () => {
+      return (
+        typeof window !== 'undefined' &&
+        (navigator.maxTouchPoints > 0 ||
+          (navigator as any).msMaxTouchPoints > 0 ||
+          window.matchMedia('(hover: none)').matches)
+      );
+    };
+    setIsMobile(isTouchDevice());
+  }, []);
 
   const playSound = (type: 'success' | 'evade') => {
     try {
@@ -136,6 +151,20 @@ const ValentinePage = () => {
     playSound('evade');
     const newPos = generateRandomPosition();
     setNoButtonPos(newPos);
+  };
+
+  const handleNoTouchStart = () => {
+    setTouchStartTime(Date.now());
+  };
+
+  const handleNoTouchEnd = () => {
+    // On mobile, require a longer touch duration before evading (500ms)
+    // This gives users a better chance to click
+    const touchDuration = Date.now() - touchStartTime;
+    if (isMobile && touchDuration < 500) {
+      return; // Don't evade on quick taps
+    }
+    handleNoButtonInteraction();
   };
 
   const handleYesClick = () => {
@@ -207,12 +236,15 @@ const ValentinePage = () => {
             {!noButtonPos ? (
               <motion.button
                 ref={noButtonRef}
-                onMouseEnter={handleNoButtonInteraction}
+                onMouseEnter={!isMobile ? handleNoButtonInteraction : undefined}
                 onClick={handleNoButtonInteraction}
-                onTouchStart={handleNoButtonInteraction}
-                whileHover={{ scale: 1.05 }}
+                onTouchStart={isMobile ? handleNoTouchStart : undefined}
+                onTouchEnd={isMobile ? handleNoTouchEnd : undefined}
+                whileHover={!isMobile ? {} : { scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                className={`px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer ${
+                  isMobile ? 'py-6 px-10 text-xl' : ''
+                }`}
                 aria-label="Decline Valentine proposal"
               >
                 No 🙈
@@ -220,12 +252,15 @@ const ValentinePage = () => {
             ) : (
               <motion.button
                 ref={noButtonRef}
-                onMouseEnter={handleNoButtonInteraction}
+                onMouseEnter={!isMobile ? handleNoButtonInteraction : undefined}
                 onClick={handleNoButtonInteraction}
-                onTouchStart={handleNoButtonInteraction}
+                onTouchStart={isMobile ? handleNoTouchStart : undefined}
+                onTouchEnd={isMobile ? handleNoTouchEnd : undefined}
                 animate={{ x: noButtonPos.x, y: noButtonPos.y }}
                 transition={{ type: 'spring', stiffness: 300, damping: 10 }}
-                className="fixed px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                className={`fixed px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer ${
+                  isMobile ? 'py-6 px-10 text-xl' : ''
+                }`}
                 style={{ left: 0, top: 0 }}
                 aria-label="Decline Valentine proposal"
               >
@@ -233,7 +268,16 @@ const ValentinePage = () => {
               </motion.button>
             )}
           </div>
-          
+
+          {/* Helpful hint */}
+          <motion.p
+            className="text-sm text-gray-600 mt-8 italic"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
+            {isMobile ? '(Hold the No button for a moment! 😉)' : '(Try to click the No button 😉)'}
+          </motion.p>
         </motion.div>
       ) : (
         <motion.div
