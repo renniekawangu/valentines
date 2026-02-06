@@ -350,7 +350,11 @@ const ValentinePage = () => {
             Your smile stays with me longer than you know, and your presence feels like home.
             Thank you for being someone who makes love feel easy, real, and beautiful.
             <br /><br />
-            Today and always, I choose you, and I’m endlessly grateful to call you mine. I guess what I’m trying to say is... Now, always, and forever💕
+            Today and always, I choose you, and I’m endlessly grateful to call you mine. 
+            <br />
+            I Love you.
+            <br />
+            Now, always, and forever💕
             </motion.p>
 
 
