@@ -98,11 +98,36 @@ const ValentinePage = () => {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       
       if (type === 'success') {
-        // Success sound: ascending notes
-        const notes = [523.25, 659.25, 783.99]; // C, E, G
+        // Success sound: romantic chord progression (Amaj7 - Cmaj7 - Fmaj7)
+        // Lower, warmer notes for a more romantic feel
+        const chords = [
+          [220, 329.63, 440, 659.25],    // A, E, A, E (Amaj7)
+          [261.63, 392, 523.25, 784],    // C, G, C, G (Cmaj7)
+          [349.23, 523.25, 698.46, 1046.5] // F, C, F, C (Fmaj7)
+        ];
         let time = audioContext.currentTime;
         
-        notes.forEach((freq, index) => {
+        chords.forEach((chord, chordIndex) => {
+          chord.forEach((freq) => {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.1, time + chordIndex * 0.4);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + chordIndex * 0.4 + 0.4);
+            
+            osc.start(time + chordIndex * 0.4);
+            osc.stop(time + chordIndex * 0.4 + 0.4);
+          });
+        });
+      } else {
+        // Evade sound: soft, gentle chime (romantic but playful)
+        const frequencies = [523.25, 659.25]; // High, sweet notes
+        
+        frequencies.forEach((freq, index) => {
           const osc = audioContext.createOscillator();
           const gain = audioContext.createGain();
           
@@ -110,27 +135,12 @@ const ValentinePage = () => {
           gain.connect(audioContext.destination);
           
           osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, time + index * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.01, time + index * 0.1 + 0.3);
+          gain.gain.setValueAtTime(0.08, audioContext.currentTime + index * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.05 + 0.2);
           
-          osc.start(time + index * 0.1);
-          osc.stop(time + index * 0.1 + 0.3);
+          osc.start(audioContext.currentTime + index * 0.05);
+          osc.stop(audioContext.currentTime + index * 0.05 + 0.2);
         });
-      } else {
-        // Evade sound: playful boop
-        const osc = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        
-        osc.connect(gain);
-        gain.connect(audioContext.destination);
-        
-        osc.frequency.setValueAtTime(400, audioContext.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        
-        osc.start(audioContext.currentTime);
-        osc.stop(audioContext.currentTime + 0.1);
       }
     } catch (e) {
       // Audio context not available, silently fail
@@ -268,16 +278,6 @@ const ValentinePage = () => {
               </motion.button>
             )}
           </div>
-
-          {/* Helpful hint */}
-          <motion.p
-            className="text-sm text-gray-600 mt-8 italic"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-          >
-            {isMobile ? '(Hold the No button for a moment! 😉)' : '(Try to click the No button 😉)'}
-          </motion.p>
         </motion.div>
       ) : (
         <motion.div
@@ -343,7 +343,9 @@ const ValentinePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8, duration: 0.6 }}
           >
-            Love You always 💕
+            Forever yours 💕
+            <br />
+            Always and forever 💕
           </motion.p>
         </motion.div>
       )}
