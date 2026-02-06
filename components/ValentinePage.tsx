@@ -51,9 +51,9 @@ const HauConfetti = () => {
 
         h.el.style.left = h.x + 'px';
         h.el.style.top = h.y + 'px';
-        h.el.style.opacity = Math.max(0, 0.8 - (h.y / window.innerHeight) * 0.8).toString();
+        h.el.style.opacity = Math.max(0, 0.8 - (h.y / window.innerHeight) * 0.6).toString();
 
-        if (h.y < window.innerHeight) {
+        if (h.y < window.innerHeight + 200) {
           hasElements = true;
         } else {
           h.el.remove();
