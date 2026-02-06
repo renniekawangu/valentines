@@ -1,53 +1,124 @@
 'use client'
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Confetti from 'react-confetti';
+
+const Confetti = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const confetti: Array<{
+      x: number;
+      y: number;
+      w: number;
+      h: number;
+      vy: number;
+      vx: number;
+      color: string;
+    }> = [];
+
+    const colors = ['#ff1744', '#ff5252', '#ff6e40', '#ff7043', '#ff8a65', '#ffab91', '#ffccbc'];
+
+    for (let i = 0; i < 100; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: -10,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 10 + 5,
+        vy: Math.random() * 3 + 3,
+        vx: Math.random() * 6 - 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      confetti.forEach((c, index) => {
+        c.y += c.vy;
+        c.x += c.vx;
+        c.vy += 0.1;
+
+        ctx.fillStyle = c.color;
+        ctx.fillRect(c.x, c.y, c.w, c.h);
+
+        if (c.y > canvas.height) {
+          confetti.splice(index, 1);
+        }
+      });
+
+      if (confetti.length > 0) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    animate();
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed top-0 left-0 w-full h-full pointer-events-none"
+    />
+  );
+};
 
 const ValentinePage = () => {
   const [accepted, setAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState<{ x: number; y: number } | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const noButtonRef = useRef<HTMLButtonElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   const playSound = (type: 'success' | 'evade') => {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    
-    if (type === 'success') {
-      // Success sound: ascending notes
-      const notes = [523.25, 659.25, 783.99]; // C, E, G
-      let time = audioContext.currentTime;
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       
-      notes.forEach((freq, index) => {
+      if (type === 'success') {
+        // Success sound: ascending notes
+        const notes = [523.25, 659.25, 783.99]; // C, E, G
+        let time = audioContext.currentTime;
+        
+        notes.forEach((freq, index) => {
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.2, time + index * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.01, time + index * 0.1 + 0.3);
+          
+          osc.start(time + index * 0.1);
+          osc.stop(time + index * 0.1 + 0.3);
+        });
+      } else {
+        // Evade sound: playful boop
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
         
         osc.connect(gain);
         gain.connect(audioContext.destination);
         
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.2, time + index * 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.01, time + index * 0.1 + 0.3);
+        osc.frequency.setValueAtTime(400, audioContext.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
         
-        osc.start(time + index * 0.1);
-        osc.stop(time + index * 0.1 + 0.3);
-      });
-    } else {
-      // Evade sound: playful boop
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      
-      osc.connect(gain);
-      gain.connect(audioContext.destination);
-      
-      osc.frequency.setValueAtTime(400, audioContext.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
-      osc.start(audioContext.currentTime);
-      osc.stop(audioContext.currentTime + 0.1);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.1);
+      }
+    } catch (e) {
+      // Audio context not available, silently fail
     }
   };
 
@@ -90,8 +161,8 @@ const ValentinePage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-rose-100">
-      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-rose-100 overflow-hidden">
+      {showConfetti && <Confetti />}
       {!accepted ? (
         <motion.div
           variants={containerVariants}
@@ -107,7 +178,7 @@ const ValentinePage = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Will you be my Valentine?
+            Marvelous C Muhata, will you be my Valentine?
           </motion.h1>
 
           {/* Decorative emoji */}
