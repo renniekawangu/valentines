@@ -366,21 +366,26 @@ const ValentinePage = () => {
 
             {/* No Button - with evading behavior */}
             {!noButtonPos ? (
-              <motion.button
-                ref={noButtonRef}
-                onMouseEnter={!isMobile ? handleNoButtonInteraction : undefined}
-                onClick={handleNoButtonInteraction}
-                onTouchStart={isMobile ? handleNoTouchStart : undefined}
-                onTouchEnd={isMobile ? handleNoTouchEnd : undefined}
-                whileHover={!isMobile ? {} : { scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer ${
-                  isMobile ? 'py-6 px-10 text-xl' : ''
-                }`}
-                aria-label="Decline Valentine proposal"
-              >
-                No 🙈
-              </motion.button>
+              <>
+                <motion.button
+                  ref={noButtonRef}
+                  onMouseEnter={!isMobile ? handleNoButtonInteraction : undefined}
+                  onClick={handleNoButtonInteraction}
+                  onTouchStart={isMobile ? handleNoTouchStart : undefined}
+                  onTouchEnd={isMobile ? handleNoTouchEnd : undefined}
+                  whileHover={!isMobile ? {} : { scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-8 py-4 text-lg font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer ${
+                    isMobile ? 'py-6 px-10 text-xl' : ''
+                  }`}
+                  aria-label="Decline Valentine proposal"
+                >
+                  No 🙈
+                </motion.button>
+                <div className="text-sm text-gray-500 mt-2">
+                  Hover or tap the "No" button to see what happens!
+                </div>
+              </>
             ) : (
               <motion.button
                 ref={noButtonRef}
