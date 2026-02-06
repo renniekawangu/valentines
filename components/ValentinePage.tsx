@@ -163,8 +163,6 @@ const ValentinePage = () => {
   const persuasionMessages = [
     "Nalafwa ine😭😭",
     "Ndekumyanga mwilinso😭😭",
-    "Just click Yes already! 😊",
-    "Don't be shy... say Yes! 🥰",
     "Pleeeease click Yes 🥺",
     "Mayo nafwa ine😭😭😭",
     "Ba marve sure😭💔",
