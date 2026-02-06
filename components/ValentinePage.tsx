@@ -347,10 +347,10 @@ const ValentinePage = () => {
       {/* Persuasion Message */}
       {persuasionMessage && (
         <motion.div
-          initial={{ opacity: 0, y: -20, scale: 0.8 }}
+          initial={{ opacity: 0, y: 20, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.8 }}
-          className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl px-6 py-4 max-w-sm text-center z-50"
+          exit={{ opacity: 0, y: -20, scale: 0.8 }}
+          className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl px-6 py-4 max-w-sm text-center z-50"
         >
           <p className="text-lg font-semibold text-red-600">{persuasionMessage}</p>
         </motion.div>
