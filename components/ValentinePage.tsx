@@ -2,11 +2,54 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Confetti from 'react-confetti';
 
 const ValentinePage = () => {
   const [accepted, setAccepted] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState<{ x: number; y: number } | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
   const noButtonRef = useRef<HTMLButtonElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const playSound = (type: 'success' | 'evade') => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    if (type === 'success') {
+      // Success sound: ascending notes
+      const notes = [523.25, 659.25, 783.99]; // C, E, G
+      let time = audioContext.currentTime;
+      
+      notes.forEach((freq, index) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.2, time + index * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + index * 0.1 + 0.3);
+        
+        osc.start(time + index * 0.1);
+        osc.stop(time + index * 0.1 + 0.3);
+      });
+    } else {
+      // Evade sound: playful boop
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      
+      osc.frequency.setValueAtTime(400, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      
+      osc.start(audioContext.currentTime);
+      osc.stop(audioContext.currentTime + 0.1);
+    }
+  };
 
   const generateRandomPosition = () => {
     const maxWidthOffset = 120;
@@ -19,12 +62,21 @@ const ValentinePage = () => {
   };
 
   const handleNoButtonInteraction = () => {
+    playSound('evade');
     const newPos = generateRandomPosition();
     setNoButtonPos(newPos);
   };
 
   const handleYesClick = () => {
+    playSound('success');
+    setShowConfetti(true);
     setAccepted(true);
+  };
+
+  const handleReset = () => {
+    setAccepted(false);
+    setNoButtonPos(null);
+    setShowConfetti(false);
   };
 
   const containerVariants = {
@@ -39,6 +91,7 @@ const ValentinePage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-rose-100">
+      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
       {!accepted ? (
         <motion.div
           variants={containerVariants}
@@ -179,6 +232,17 @@ const ValentinePage = () => {
           >
             Forever yours 💕
           </motion.p>
+
+          {/* Reset Button */}
+          <motion.button
+            onClick={handleReset}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-12 px-6 py-2 text-sm font-semibold bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+            aria-label="Ask again"
+          >
+            Ask Again? 💬
+          </motion.button>
         </motion.div>
       )}
     </div>
